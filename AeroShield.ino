@@ -215,23 +215,32 @@ void loop() {
     payload += "\"city\":\"" + CITY + "\"";
     payload += "}";
 
+    // Debug output - First to show sensor readings
+    Serial.println("\n============================");
+    Serial.print("Temperature : "); Serial.print(temperature); Serial.println(" *C");
+    Serial.print("Humidity    : "); Serial.print(humidity); Serial.println(" %");
+    Serial.print("Raw PPM     : "); Serial.println(ppm);
+    Serial.print("Calculated AQI : "); Serial.println(aqi);
+    Serial.print("Category    : "); Serial.println(categoryAQI(aqi));
+    Serial.println("============================");
+    
     // Publish to MQTT
-    Serial.print("📤 Publishing: ");
+    Serial.print("📤 Publishing to topic: ");
+    Serial.println(MQTT_TOPIC);
+    Serial.print("Payload: ");
     Serial.println(payload);
     
-    if (mqttClient.publish(MQTT_TOPIC, payload.c_str())) {
-      Serial.println("✅ Published!");
+    Serial.print("MQTT Connection Status: ");
+    Serial.println(mqttClient.connected() ? "Connected" : "Disconnected");
+    
+    if (mqttClient.connected()) {
+      boolean result = mqttClient.publish(MQTT_TOPIC, payload.c_str());
+      Serial.print("Publish result: ");
+      Serial.println(result ? "Success" : "Failed");
     } else {
-      Serial.println("❌ Publish failed");
+      Serial.println("❌ MQTT not connected - cannot publish");
+      Serial.println("🔄 Attempting to reconnect...");
+      connectMQTT();
     }
-
-    // Debug output
-    Serial.println("----------------------------");
-    Serial.print("Temp: "); Serial.print(temperature); Serial.println("°C");
-    Serial.print("Humidity: "); Serial.print(humidity); Serial.println("%");
-    Serial.print("PPM: "); Serial.println(ppm);
-    Serial.print("AQI: "); Serial.println(aqi);
-    Serial.print("Category: "); Serial.println(categoryAQI(aqi));
-    Serial.println("----------------------------");
   }
 }
