@@ -139,6 +139,14 @@ void setup() {
   // For WiFiManager 2.0+, AP credentials are set in autoConnect
   // No custom parameters - just WiFi credentials
   
+  // Configure WiFi Manager
+  wifiManager.setConfigPortalTimeout(300); // 5 minutes timeout
+  wifiManager.setWiFiAutoReconnect(true);
+  wifiManager.setConnectTimeout(20); // 20 seconds to connect
+  
+  // Set custom portal styling (simplified clean UI with JS to hide extra buttons)
+  wifiManager.setCustomHeadElement("<style>body{font-family:'Segoe UI',Arial,sans-serif;background:linear-gradient(135deg,#667eea 0%,#764ba2 100%);min-height:100vh;margin:0;padding:20px}.container{max-width:400px;margin:50px auto;background:rgba(255,255,255,0.95);padding:40px;border-radius:20px;box-shadow:0 20px 60px rgba(0,0,0,0.3)}h1{color:#333;text-align:center;margin-bottom:30px;font-size:28px}input[type='text'],input[type='password']{width:100%;padding:15px;margin:10px 0;border:2px solid #e0e0e0;border-radius:10px;font-size:16px;box-sizing:border-box}input:focus{border-color:#667eea;outline:none}button{width:100%;background:linear-gradient(135deg,#667eea,#764ba2);color:white;padding:15px;border:none;border-radius:10px;font-size:18px;font-weight:bold;cursor:pointer;margin-top:20px}button:hover{transform:translateY(-2px);box-shadow:0 10px 20px rgba(102,126,234,0.4)}.p,.r,.help,.i{display:none!important}</style><script>setTimeout(function(){var e=document.querySelectorAll('.p,.r,.help,.i');e.forEach(function(t){t.style.display='none'})},100)</script>");
+  
   // Connect to WiFi or start AP
   Serial.println("📡 Starting WiFi Manager...");
   if (!wifiManager.autoConnect("AeroShield-Setup", "aeroshield123")) {
