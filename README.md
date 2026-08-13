@@ -97,7 +97,7 @@ aeroshield-project/
    - Select "NodeMCU 1.0 (ESP-12E Module)"
 
 3. Upload firmware:
-   - Open `AeroShield.ino`
+   - Open `AeroShield.ino` (in project root)
    - Upload to NodeMCU
 
 4. Configure WiFi:

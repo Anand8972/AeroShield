@@ -91,7 +91,7 @@ const DEFAULT_CONFIG = {
 
 1. Open Arduino IDE
 2. Install required libraries (see README.md)
-3. Open `AeroShield.ino`
+3. Open `AeroShield.ino` (in project root)
 4. Select NodeMCU 1.0 board
 5. Upload to your ESP8266
 
