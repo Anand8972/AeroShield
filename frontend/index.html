@@ -1,0 +1,259 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>AeroShield - Real-Time Air Quality Monitor</title>
+  
+  <!-- Modern Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800&family=Space+Grotesk:wght@400;500;600;700&display=swap" rel="stylesheet">
+  
+  <!-- FontAwesome Icons -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  
+  <!-- Main Stylesheet -->
+  <link rel="stylesheet" href="style.css">
+  
+  <!-- Chart.js -->
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+</head>
+<body>
+  
+  <!-- Glowing Background Orbs -->
+  <div class="bg-orb orb-1"></div>
+  <div class="bg-orb orb-2"></div>
+  <div class="bg-orb orb-3"></div>
+
+  <div class="dashboard-container">
+    
+    <!-- Top Header -->
+    <header class="main-header">
+      <div class="logo-area">
+        <div class="logo-icon"><i class="fa-solid fa-wind"></i></div>
+        <div class="logo-text">
+          <h1>AeroShield</h1>
+          <p>IoT Air Quality & Climate Analytics</p>
+        </div>
+      </div>
+      
+      <div class="header-controls">
+        <div class="connection-status offline" id="connStatus">
+          <span class="pulse-dot"></span>
+          <span class="status-label">Disconnected</span>
+        </div>
+        <div class="city-badge">
+          <i class="fa-solid fa-location-dot"></i>
+          <span id="currentCityText">Chikodi</span>
+        </div>
+        <button class="settings-btn" id="openSettingsBtn" title="API Settings">
+          <i class="fa-solid fa-gears"></i>
+        </button>
+      </div>
+    </header>
+
+    <!-- Main Content Area -->
+    <main class="dashboard-content">
+      
+      <!-- Metrics Grid -->
+      <section class="metrics-grid">
+        
+        <!-- AQI Card -->
+        <div class="metric-card aqi-card glass" id="aqiCard">
+          <div class="card-glow"></div>
+          <div class="card-header">
+            <h3>Air Quality Index (AQI)</h3>
+            <span class="card-icon"><i class="fa-solid fa-mask-ventilator"></i></span>
+          </div>
+          <div class="card-body">
+            <div class="aqi-display">
+              <span class="aqi-value" id="liveAQI">--</span>
+              <div class="aqi-category" id="liveCategory">Retrieving...</div>
+            </div>
+            <div class="aqi-progress-bar">
+              <div class="aqi-progress-fill" id="aqiProgress" style="width: 0%"></div>
+            </div>
+            <div class="aqi-range-labels">
+              <span>0 (Good)</span>
+              <span>500 (Hazardous)</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- Temperature Card -->
+        <div class="metric-card glass" id="tempCard">
+          <div class="card-header">
+            <h3>Temperature</h3>
+            <span class="card-icon temp"><i class="fa-solid fa-temperature-three-quarters"></i></span>
+          </div>
+          <div class="card-body">
+            <div class="metric-value-container">
+              <span class="metric-value" id="liveTemp">--</span>
+              <span class="metric-unit">°C</span>
+            </div>
+            <div class="metric-trend" id="tempTrend">
+              <i class="fa-solid fa-arrows-spin fa-spin"></i> Initializing sensor...
+            </div>
+          </div>
+        </div>
+
+        <!-- Humidity Card -->
+        <div class="metric-card glass" id="humidityCard">
+          <div class="card-header">
+            <h3>Humidity</h3>
+            <span class="card-icon humidity"><i class="fa-solid fa-droplet"></i></span>
+          </div>
+          <div class="card-body">
+            <div class="metric-value-container">
+              <span class="metric-value" id="liveHumidity">--</span>
+              <span class="metric-unit">%</span>
+            </div>
+            <div class="metric-trend" id="humidityTrend">
+              <i class="fa-solid fa-arrows-spin fa-spin"></i> Initializing sensor...
+            </div>
+          </div>
+        </div>
+
+        <!-- Raw PPM Card -->
+        <div class="metric-card glass" id="ppmCard">
+          <div class="card-header">
+            <h3>Gas concentration</h3>
+            <span class="card-icon ppm"><i class="fa-solid fa-smog"></i></span>
+          </div>
+          <div class="card-body">
+            <div class="metric-value-container">
+              <span class="metric-value" id="livePPM">--</span>
+              <span class="metric-unit">PPM</span>
+            </div>
+            <div class="metric-trend" id="ppmTrend">
+              <i class="fa-solid fa-arrows-spin fa-spin"></i> MQ135 warming up...
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- Charts & Tools Section -->
+      <section class="visuals-section">
+        
+        <!-- Left: Charts Grid -->
+        <div class="charts-container glass">
+          <div class="section-title-bar">
+            <h2><i class="fa-solid fa-chart-line"></i> Historical Trend Graphs</h2>
+            <div class="time-range-indicator">Live Updates Active</div>
+          </div>
+          
+          <div class="charts-grid">
+            <div class="chart-wrapper">
+              <canvas id="tempHumChart"></canvas>
+            </div>
+            <div class="chart-wrapper">
+              <canvas id="aqiPpmChart"></canvas>
+            </div>
+          </div>
+        </div>
+
+        <!-- Right: Simulator Panel -->
+        <div class="simulator-panel glass">
+          <div class="section-title-bar">
+            <h2><i class="fa-solid fa-flask"></i> Database Mock Simulator</h2>
+            <div class="simulator-badge">Developer Tool</div>
+          </div>
+          
+          <p class="simulator-desc">Don't have the NodeMCU hardware online yet? Use this simulator to test the dashboard with mock data!</p>
+          
+          <div class="simulator-controls">
+            <!-- Temperature slider -->
+            <div class="sim-group">
+              <div class="sim-label">
+                <span>Temperature (°C)</span>
+                <span class="sim-val" id="simTempVal">27.5</span>
+              </div>
+              <input type="range" class="sim-slider" id="simTemp" min="0" max="50" step="0.1" value="27.5">
+            </div>
+
+            <!-- Humidity slider -->
+            <div class="sim-group">
+              <div class="sim-label">
+                <span>Humidity (%)</span>
+                <span class="sim-val" id="simHumVal">62</span>
+              </div>
+              <input type="range" class="sim-slider" id="simHum" min="10" max="100" step="1" value="62">
+            </div>
+
+            <!-- PPM slider -->
+            <div class="sim-group">
+              <div class="sim-label">
+                <span>MQ135 Gas Output (PPM)</span>
+                <span class="sim-val" id="simPpmVal">210</span>
+              </div>
+              <input type="range" class="sim-slider" id="simPpm" min="0" max="1023" step="1" value="210">
+            </div>
+            
+            <div class="sim-action-row">
+              <button class="btn btn-secondary" id="randomizeSimBtn">
+                <i class="fa-solid fa-shuffle"></i> Randomize
+              </button>
+              <button class="btn btn-primary" id="pushSimDataBtn">
+                <i class="fa-solid fa-play"></i> Simulate Data
+              </button>
+            </div>
+
+            <div class="auto-simulate-toggle-box">
+              <label class="switch">
+                <input type="checkbox" id="autoSimToggle">
+                <span class="slider round"></span>
+              </label>
+              <span class="toggle-label">Auto-simulate updates (every 5s)</span>
+            </div>
+          </div>
+        </div>
+      </section>
+
+    </main>
+
+    <!-- Footer -->
+    <footer class="main-footer">
+      <p>AeroShield Dashboard &copy; 2026. Data is securely synced via MQTT.</p>
+      <p class="last-sync-text">Last Sync: <span id="lastSyncTime">Never</span></p>
+    </footer>
+  </div>
+
+  <!-- Settings Modal (Glassmorphism overlay) -->
+  <div class="modal-overlay" id="settingsModal">
+    <div class="modal-content glass">
+      <div class="modal-header">
+        <h2><i class="fa-solid fa-sliders"></i> API & Device Configuration</h2>
+        <button class="close-modal-btn" id="closeSettingsBtn">&times;</button>
+      </div>
+      <div class="modal-body">
+        <form id="configForm">
+          <div class="form-section">
+            <h3>Backend API Settings</h3>
+            <div class="form-group">
+              <label for="cfgApiKey">API Base URL</label>
+              <input type="url" id="cfgApiKey" required placeholder="http://localhost:3000">
+            </div>
+          </div>
+
+          <div class="form-section">
+            <h3>Device & Location Setup</h3>
+            <div class="form-group">
+              <label for="cfgCity">Target City Node (Lowercase)</label>
+              <input type="text" id="cfgCity" required placeholder="chikodi">
+            </div>
+          </div>
+          
+          <div class="form-actions">
+            <button type="button" class="btn btn-secondary" id="resetConfigBtn">Reset to Default</button>
+            <button type="submit" class="btn btn-primary" id="saveConfigBtn">Save Configuration</button>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+
+  <!-- Main JavaScript Logic -->
+  <script type="module" src="app.js"></script>
+</body>
+</html>
