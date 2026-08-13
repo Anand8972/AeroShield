@@ -34,8 +34,8 @@
 // ==========================================
 const char* MQTT_BROKER = "97f6bb83bebf454c86a437210b5379b9.s1.eu.hivemq.cloud";
 const int MQTT_PORT = 8883;
-const char* MQTT_USERNAME = "97f6bb83bebf454c86a437210b5379b9";
-const char* MQTT_PASSWORD = "";
+const char* MQTT_USERNAME = "anand";
+const char* MQTT_PASSWORD = "anand@1234";
 const char* MQTT_TOPIC = "aeroshield/sensors/data";
 const char* MQTT_CLIENT_ID = "AeroShield-ESP8266";
 
