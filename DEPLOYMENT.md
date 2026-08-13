@@ -90,8 +90,8 @@ const DEFAULT_CONFIG = {
 ## Step 5: Flash ESP8266 Firmware
 
 1. Open Arduino IDE
-2. Install required libraries (see firmware/README.md)
-3. Open `firmware/AeroShield_MQTT.ino`
+2. Install required libraries (see README.md)
+3. Open `AeroShield.ino`
 4. Select NodeMCU 1.0 board
 5. Upload to your ESP8266
 

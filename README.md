@@ -14,7 +14,7 @@ ESP8266 (Sensors) → MQTT (HiveMQ Cloud) → Node.js Backend → REST API → F
 aeroshield-project/
 ├── backend/          # Node.js MQTT broker & REST API server
 ├── frontend/         # React/Vanilla JS web dashboard
-├── firmware/         # ESP8266 Arduino firmware
+├── AeroShield.ino    # ESP8266 Arduino firmware (single file)
 └── README.md
 ```
 
@@ -28,7 +28,7 @@ aeroshield-project/
 ### Software
 - **Backend**: Node.js with Express and MQTT client
 - **Frontend**: HTML/CSS/JS dashboard with Chart.js
-- **Firmware**: Arduino C++ with WiFiManager and PubSubClient
+- **Firmware**: Arduino C++ (`AeroShield.ino`) with WiFiManager and PubSubClient
 
 ### Cloud Services
 - **MQTT Broker**: HiveMQ Cloud
@@ -97,7 +97,7 @@ aeroshield-project/
    - Select "NodeMCU 1.0 (ESP-12E Module)"
 
 3. Upload firmware:
-   - Open `firmware/AeroShield_MQTT.ino`
+   - Open `AeroShield.ino`
    - Upload to NodeMCU
 
 4. Configure WiFi:
