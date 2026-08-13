@@ -25,7 +25,7 @@
   1. "DHT sensor library" by Adafruit
   2. "Adafruit Unified Sensor"
   3. "PubSubClient" by Nick O'Leary
-  4. "WiFiManager" by tzapu
+  4. "WiFiManager" by tzapu (version 2.0+)
   
   BOARD: NodeMCU 1.0 (ESP-12E Module)
 */
@@ -133,10 +133,7 @@ void setup() {
   dht.begin();
   
   // WiFiManager Configuration
-  wifiManager.setAPName("AeroShield-Setup");
-  wifiManager.setAPPassword("aeroshield123");
-  
-  // Add custom parameter for city only
+  // For WiFiManager 2.0+, AP credentials are set in autoConnect
   WiFiManagerParameter customCity("city", "City Name", CITY.c_str(), 20);
   wifiManager.addParameter(&customCity);
   

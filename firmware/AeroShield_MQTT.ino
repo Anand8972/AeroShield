@@ -141,10 +141,7 @@ void setup()
   
   // Initialize WiFiManager
   // WiFiManager will create an AP named "AeroShield-Setup" if no saved WiFi
-  wifiManager.setAPName("AeroShield-Setup");
-  wifiManager.setAPPassword("aeroshield123");
-  
-  // Custom parameter for city configuration only
+  // For WiFiManager 2.0+, AP credentials are set in autoConnect
   WiFiManagerParameter customCity("city", "City Name", CITY.c_str(), 20);
   wifiManager.addParameter(&customCity);
   
