@@ -43,8 +43,8 @@ The firmware uses WiFiManager to create a captive portal for configuration:
 3. A configuration portal will open automatically
 4. Select your WiFi network and enter password
 5. Configure your city name
-6. **Configure MQTT username and password** (default: anand / anand@1234)
-7. The device will restart and connect to your WiFi
+6. The device will restart and connect to your WiFi
+7. MQTT credentials are pre-configured in the firmware (anand / anand@1234)
 
 ## MQTT Configuration
 

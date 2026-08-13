@@ -11,13 +11,14 @@
   ACCESS POINT SETUP:
   - Connect to WiFi: "AeroShield-Setup"
   - Password: "aeroshield123"
-  - Configure: WiFi credentials, City name, MQTT username & password
+  - Configure: WiFi credentials and City name only
+  - MQTT credentials are pre-configured in firmware
   
-  MQTT CREDENTIALS:
+  MQTT CREDENTIALS (Hardcoded):
   - Broker: 97f6bb83bebf454c86a437210b5379b9.s1.eu.hivemq.cloud
   - Port: 8883
-  - Default Username: anand
-  - Default Password: anand@1234
+  - Username: anand
+  - Password: anand@1234
   - Topic: aeroshield/sensors/data
   
   INSTALL LIBRARIES (Arduino Library Manager):
@@ -40,6 +41,8 @@
 // ==========================================
 const char* MQTT_BROKER = "97f6bb83bebf454c86a437210b5379b9.s1.eu.hivemq.cloud";
 const int MQTT_PORT = 8883;
+const char* MQTT_USERNAME = "anand";
+const char* MQTT_PASSWORD = "anand@1234";
 const char* MQTT_TOPIC = "aeroshield/sensors/data";
 const char* MQTT_CLIENT_ID = "AeroShield-ESP8266";
 
@@ -58,8 +61,6 @@ WiFiManager wifiManager;
 
 // Variables
 String CITY = "chikodi";
-String MQTT_USER = "anand";
-String MQTT_PASS = "anand@1234";
 unsigned long lastMillis = 0;
 const long INTERVAL = 10000; // Send data every 10 seconds
 
@@ -98,15 +99,13 @@ void connectMQTT() {
   mqttClient.setCallback(mqttCallback);
 
   Serial.print("Connecting to MQTT Broker ");
-  Serial.print(" as user: ");
-  Serial.println(MQTT_USER);
   int attempts = 0;
   
   while (!mqttClient.connected() && attempts < 5) {
     Serial.print(".");
     attempts++;
     
-    if (mqttClient.connect(MQTT_CLIENT_ID, MQTT_USER.c_str(), MQTT_PASS.c_str())) {
+    if (mqttClient.connect(MQTT_CLIENT_ID, MQTT_USERNAME, MQTT_PASSWORD)) {
       Serial.println("\n✅ Connected to MQTT Broker!");
     } else {
       Serial.print("failed, rc=");
@@ -137,14 +136,9 @@ void setup() {
   wifiManager.setAPName("AeroShield-Setup");
   wifiManager.setAPPassword("aeroshield123");
   
-  // Add custom parameters for city and MQTT credentials
+  // Add custom parameter for city only
   WiFiManagerParameter customCity("city", "City Name", CITY.c_str(), 20);
-  WiFiManagerParameter customMqttUser("mqtt_user", "MQTT Username", MQTT_USER.c_str(), 30);
-  WiFiManagerParameter customMqttPass("mqtt_pass", "MQTT Password", MQTT_PASS.c_str(), 30);
-  
   wifiManager.addParameter(&customCity);
-  wifiManager.addParameter(&customMqttUser);
-  wifiManager.addParameter(&customMqttPass);
   
   // Connect to WiFi or start AP
   if (!wifiManager.autoConnect("AeroShield-Setup", "aeroshield123")) {
@@ -158,15 +152,10 @@ void setup() {
   Serial.print("IP: ");
   Serial.println(WiFi.localIP());
   
-  // Get values from custom parameters
+  // Get city from custom parameter
   CITY = customCity.getValue();
-  MQTT_USER = customMqttUser.getValue();
-  MQTT_PASS = customMqttPass.getValue();
-  
   Serial.print("City: ");
   Serial.println(CITY);
-  Serial.print("MQTT Username: ");
-  Serial.println(MQTT_USER);
   
   // Connect to MQTT
   connectMQTT();
