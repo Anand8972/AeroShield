@@ -104,6 +104,8 @@ aeroshield-project/
    - Connect to "AeroShield-Setup" WiFi network
    - Password: aeroshield123
    - Configure your WiFi credentials
+   - Configure city name
+   - **Configure MQTT username and password** (default: anand / anand@1234)
    - Device will restart and connect
 
 ## API Endpoints

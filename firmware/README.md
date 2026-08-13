@@ -36,14 +36,15 @@ Install these libraries via Arduino Library Manager:
 
 ## WiFi Configuration
 
-The firmware uses WiFiManager to create a captive portal for WiFi configuration:
+The firmware uses WiFiManager to create a captive portal for configuration:
 
 1. Upload the firmware to your NodeMCU
 2. Connect to the WiFi network "AeroShield-Setup" (password: aeroshield123)
 3. A configuration portal will open automatically
 4. Select your WiFi network and enter password
-5. Optionally configure your city name
-6. The device will restart and connect to your WiFi
+5. Configure your city name
+6. **Configure MQTT username and password** (default: anand / anand@1234)
+7. The device will restart and connect to your WiFi
 
 ## MQTT Configuration
 
