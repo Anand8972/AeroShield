@@ -2,7 +2,7 @@
 // Configuration
 // ==========================================
 const DEFAULT_CONFIG = {
-  apiBaseUrl: 'http://localhost:3000',
+  apiBaseUrl: 'https://aeroshield-backend.onrender.com', // Replace with your actual Render URL
   city: 'chikodi'
 };
 
