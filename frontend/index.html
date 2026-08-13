@@ -133,10 +133,8 @@
         </div>
       </section>
 
-      <!-- Charts & Tools Section -->
+      <!-- Charts Section -->
       <section class="visuals-section">
-        
-        <!-- Left: Charts Grid -->
         <div class="charts-container glass">
           <div class="section-title-bar">
             <h2><i class="fa-solid fa-chart-line"></i> Historical Trend Graphs</h2>
@@ -149,62 +147,6 @@
             </div>
             <div class="chart-wrapper">
               <canvas id="aqiPpmChart"></canvas>
-            </div>
-          </div>
-        </div>
-
-        <!-- Right: Simulator Panel -->
-        <div class="simulator-panel glass">
-          <div class="section-title-bar">
-            <h2><i class="fa-solid fa-flask"></i> Database Mock Simulator</h2>
-            <div class="simulator-badge">Developer Tool</div>
-          </div>
-          
-          <p class="simulator-desc">Don't have the NodeMCU hardware online yet? Use this simulator to test the dashboard with mock data!</p>
-          
-          <div class="simulator-controls">
-            <!-- Temperature slider -->
-            <div class="sim-group">
-              <div class="sim-label">
-                <span>Temperature (°C)</span>
-                <span class="sim-val" id="simTempVal">27.5</span>
-              </div>
-              <input type="range" class="sim-slider" id="simTemp" min="0" max="50" step="0.1" value="27.5">
-            </div>
-
-            <!-- Humidity slider -->
-            <div class="sim-group">
-              <div class="sim-label">
-                <span>Humidity (%)</span>
-                <span class="sim-val" id="simHumVal">62</span>
-              </div>
-              <input type="range" class="sim-slider" id="simHum" min="10" max="100" step="1" value="62">
-            </div>
-
-            <!-- PPM slider -->
-            <div class="sim-group">
-              <div class="sim-label">
-                <span>MQ135 Gas Output (PPM)</span>
-                <span class="sim-val" id="simPpmVal">210</span>
-              </div>
-              <input type="range" class="sim-slider" id="simPpm" min="0" max="1023" step="1" value="210">
-            </div>
-            
-            <div class="sim-action-row">
-              <button class="btn btn-secondary" id="randomizeSimBtn">
-                <i class="fa-solid fa-shuffle"></i> Randomize
-              </button>
-              <button class="btn btn-primary" id="pushSimDataBtn">
-                <i class="fa-solid fa-play"></i> Simulate Data
-              </button>
-            </div>
-
-            <div class="auto-simulate-toggle-box">
-              <label class="switch">
-                <input type="checkbox" id="autoSimToggle">
-                <span class="slider round"></span>
-              </label>
-              <span class="toggle-label">Auto-simulate updates (every 5s)</span>
             </div>
           </div>
         </div>

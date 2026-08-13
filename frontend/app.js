@@ -54,16 +54,7 @@ const closeSettingsBtn = document.getElementById('closeSettingsBtn');
 const configForm = document.getElementById('configForm');
 const resetConfigBtn = document.getElementById('resetConfigBtn');
 
-// Simulator Inputs
-const simTemp = document.getElementById('simTemp');
-const simHum = document.getElementById('simHum');
-const simPpm = document.getElementById('simPpm');
-const simTempVal = document.getElementById('simTempVal');
-const simHumVal = document.getElementById('simHumVal');
-const simPpmVal = document.getElementById('simPpmVal');
-const randomizeSimBtn = document.getElementById('randomizeSimBtn');
-const pushSimDataBtn = document.getElementById('pushSimDataBtn');
-const autoSimToggle = document.getElementById('autoSimToggle');
+
 
 // ==========================================
 // API Functions
@@ -106,17 +97,7 @@ async function fetchHistoryData() {
   }
 }
 
-async function pushMockDataToBackend(data) {
-  try {
-    // For now, we'll just update locally since the backend receives data from MQTT
-    // In a real implementation, you might want to send this to the backend for testing
-    console.log('Mock data:', data);
-    return true;
-  } catch (error) {
-    console.error('Error pushing mock data:', error);
-    return false;
-  }
-}
+
 
 // ==========================================
 // Initialization
@@ -491,86 +472,7 @@ function updateChartsData(historyData) {
   aqiPpmChart.update('none');
 }
 
-// ==========================================
-// Database Simulation Engine
-// ==========================================
-function showPushFeedback(success, msg) {
-  const orig = pushSimDataBtn.innerHTML;
-  pushSimDataBtn.innerHTML = success
-    ? `<i class="fa-solid fa-check"></i> ${msg}`
-    : `<i class="fa-solid fa-xmark"></i> ${msg}`;
-  pushSimDataBtn.style.background = success
-    ? "linear-gradient(135deg,#22c55e,#16a34a)"
-    : "linear-gradient(135deg,#ef4444,#b91c1c)";
-  setTimeout(() => { pushSimDataBtn.innerHTML = orig; pushSimDataBtn.style.background = ""; }, 2500);
-}
 
-function pushMockData() {
-  const t = parseFloat(simTemp.value);
-  const h = parseFloat(simHum.value);
-  const ppm = parseInt(simPpm.value);
-  const aqi = calculateAQI(ppm);
-  const category = categoryAQI(aqi);
-  const ts = Math.round(Date.now() / 1000);
-  const payload = { temperature: t, humidity: h, ppm, aqi, category, timestamp: ts };
-
-  // Always update local UI immediately
-  updateRealtimeUI(payload);
-
-  if (!isConnected) {
-    console.warn("⚠️ Not connected — updating locally only.");
-    showPushFeedback(true, "Demo OK");
-    return;
-  }
-
-  pushMockDataToBackend(payload)
-    .then(success => {
-      if (success) {
-        console.log("✅ Pushed mock data");
-        showPushFeedback(true, "Simulated ✓");
-      } else {
-        showPushFeedback(false, "Failed");
-      }
-    });
-}
-
-function handleAutoSimulate() {
-  if (autoSimToggle.checked) {
-    // Disable manual push button during auto-simulate
-    pushSimDataBtn.disabled = true;
-    
-    autoSimInterval = setInterval(() => {
-      // Add slight random drift to sliders to simulate dynamic environment
-      let t = parseFloat(simTemp.value) + (Math.random() - 0.5) * 0.8;
-      let h = parseFloat(simHum.value) + Math.round((Math.random() - 0.5) * 4);
-      let p = parseInt(simPpm.value) + Math.round((Math.random() - 0.5) * 30);
-
-      // Clamp ranges
-      t = Math.max(10, Math.min(45, t));
-      h = Math.max(20, Math.min(95, h));
-      p = Math.max(40, Math.min(800, p));
-
-      // Update Slider positions
-      simTemp.value = t.toFixed(1);
-      simHum.value = h;
-      simPpm.value = p;
-      
-      // Update values text
-      simTempVal.textContent = t.toFixed(1);
-      simHumVal.textContent = h;
-      simPpmVal.textContent = p;
-
-      // Push to DB
-      pushMockData();
-    }, 5000);
-  } else {
-    pushSimDataBtn.disabled = false;
-    if (autoSimInterval) {
-      clearInterval(autoSimInterval);
-      autoSimInterval = null;
-    }
-  }
-}
 
 // ==========================================
 // Settings Modal Controls
@@ -623,32 +525,6 @@ function bindEvents() {
   });
   configForm.addEventListener('submit', saveConfig);
   resetConfigBtn.addEventListener('click', resetConfig);
-
-  // Sliders input events
-  simTemp.addEventListener('input', () => simTempVal.textContent = parseFloat(simTemp.value).toFixed(1));
-  simHum.addEventListener('input', () => simHumVal.textContent = simHum.value);
-  simPpm.addEventListener('input', () => simPpmVal.textContent = simPpm.value);
-
-  // Randomize button
-  randomizeSimBtn.addEventListener('click', () => {
-    const t = (20 + Math.random() * 15).toFixed(1);
-    const h = Math.round(40 + Math.random() * 45);
-    const p = Math.round(80 + Math.random() * 550);
-
-    simTemp.value = t;
-    simHum.value = h;
-    simPpm.value = p;
-
-    simTempVal.textContent = t;
-    simHumVal.textContent = h;
-    simPpmVal.textContent = p;
-  });
-
-  // Push manual simulated data
-  pushSimDataBtn.addEventListener('click', pushMockData);
-
-  // Auto simulate toggle
-  autoSimToggle.addEventListener('change', handleAutoSimulate);
 }
 
 // ==========================================
