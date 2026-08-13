@@ -478,11 +478,11 @@ function updateChartsData(historyData) {
 // Settings Modal Controls
 // ==========================================
 function openSettings() {
-  document.getElementById('cfgApiKey').value = appConfig.apiBaseUrl;
-  document.getElementById('cfgDbUrl').value = appConfig.apiBaseUrl;
-  document.getElementById('cfgAuthEmail').value = '';
-  document.getElementById('cfgAuthPass').value = '';
-  document.getElementById('cfgCity').value = appConfig.city;
+  const cfgApiKey = document.getElementById('cfgApiKey');
+  const cfgCity = document.getElementById('cfgCity');
+  
+  if (cfgApiKey) cfgApiKey.value = appConfig.apiBaseUrl;
+  if (cfgCity) cfgCity.value = appConfig.city;
   
   settingsModal.classList.add('active');
 }

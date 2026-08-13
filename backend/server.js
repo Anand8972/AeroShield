@@ -56,19 +56,27 @@ function connectMQTT() {
 
   mqttClient.on('message', (topic, message) => {
     try {
-      const data = JSON.parse(message.toString());
-      console.log(`📥 Received data from ${topic}:`, data);
+      const messageStr = message.toString();
+      console.log(`📥 Received message from topic: ${topic}`);
+      console.log(`📦 Message length: ${messageStr.length} bytes`);
+      console.log(`📝 Raw message: ${messageStr}`);
+      
+      const data = JSON.parse(messageStr);
+      console.log(`✅ Parsed data:`, data);
       
       // Update realtime data
       sensorData.realtime = data;
+      console.log(`🔄 Updated realtime data`);
       
       // Add to history (keep last 100 records)
       sensorData.history.push(data);
       if (sensorData.history.length > 100) {
         sensorData.history.shift();
       }
+      console.log(`📊 History size: ${sensorData.history.length}`);
     } catch (error) {
       console.error('❌ Error parsing MQTT message:', error);
+      console.error('Raw message:', message.toString());
     }
   });
 
