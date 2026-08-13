@@ -63,6 +63,9 @@ WiFiManager wifiManager;
 String CITY = "chikodi";
 unsigned long lastMillis = 0;
 const long INTERVAL = 10000; // Send data every 10 seconds
+unsigned long wifiDisconnectTime = 0;
+const long WIFI_TIMEOUT = 5000; // Reopen AP after 5 seconds of WiFi disconnect
+bool wifiConnected = false;
 
 // ==========================================
 // Helper Functions
@@ -132,12 +135,12 @@ void setup() {
   // Initialize Sensor
   dht.begin();
   
-  // WiFiManager Configuration
+  // WiFiManager Configuration - Simplified to only SSID/Password
   // For WiFiManager 2.0+, AP credentials are set in autoConnect
-  WiFiManagerParameter customCity("city", "City Name", CITY.c_str(), 20);
-  wifiManager.addParameter(&customCity);
+  // No custom parameters - just WiFi credentials
   
   // Connect to WiFi or start AP
+  Serial.println("📡 Starting WiFi Manager...");
   if (!wifiManager.autoConnect("AeroShield-Setup", "aeroshield123")) {
     Serial.println("Failed to connect and hit timeout");
     delay(3000);
@@ -148,11 +151,8 @@ void setup() {
   Serial.println("✅ WiFi Connected!");
   Serial.print("IP: ");
   Serial.println(WiFi.localIP());
-  
-  // Get city from custom parameter
-  CITY = customCity.getValue();
-  Serial.print("City: ");
-  Serial.println(CITY);
+  wifiConnected = true;
+  wifiDisconnectTime = 0;
   
   // Connect to MQTT
   connectMQTT();
@@ -181,6 +181,39 @@ void setup() {
 // Main Loop
 // ==========================================
 void loop() {
+  // Check WiFi connection status
+  if (WiFi.status() != WL_CONNECTED) {
+    if (wifiConnected) {
+      // WiFi just disconnected
+      wifiConnected = false;
+      wifiDisconnectTime = millis();
+      Serial.println("⚠️ WiFi disconnected! Starting timer...");
+    } else {
+      // WiFi still disconnected
+      if (millis() - wifiDisconnectTime >= WIFI_TIMEOUT) {
+        Serial.println("⏱️ WiFi disconnected for 5+ seconds - reopening Access Point");
+        wifiManager.startConfigPortal("AeroShield-Setup", "aeroshield123");
+        if (WiFi.status() == WL_CONNECTED) {
+          Serial.println("✅ WiFi reconnected!");
+          Serial.print("IP: ");
+          Serial.println(WiFi.localIP());
+          wifiConnected = true;
+          wifiDisconnectTime = 0;
+          // Reconnect MQTT after WiFi reconnects
+          connectMQTT();
+        }
+      }
+    }
+  } else {
+    if (!wifiConnected) {
+      // WiFi just reconnected
+      wifiConnected = true;
+      wifiDisconnectTime = 0;
+      Serial.println("✅ WiFi reconnected!");
+      connectMQTT();
+    }
+  }
+
   // Maintain MQTT connection
   if (!mqttClient.connected()) {
     connectMQTT();
