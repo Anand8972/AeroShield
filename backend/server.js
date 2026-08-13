@@ -15,8 +15,8 @@ app.use(express.json());
 // ==========================================
 const MQTT_BROKER = process.env.MQTT_BROKER || '97f6bb83bebf454c86a437210b5379b9.s1.eu.hivemq.cloud';
 const MQTT_PORT = process.env.MQTT_PORT || 8883;
-const MQTT_USERNAME = process.env.MQTT_USERNAME || '97f6bb83bebf454c86a437210b5379b9';
-const MQTT_PASSWORD = process.env.MQTT_PASSWORD || '';
+const MQTT_USERNAME = process.env.MQTT_USERNAME || 'anand';
+const MQTT_PASSWORD = process.env.MQTT_PASSWORD || 'anand@1234';
 const MQTT_TOPIC = process.env.MQTT_TOPIC || 'aeroshield/sensors/#';
 
 // MQTT Client
