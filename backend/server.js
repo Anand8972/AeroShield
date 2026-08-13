@@ -34,9 +34,12 @@ function connectMQTT() {
     username: MQTT_USERNAME,
     password: MQTT_PASSWORD,
     protocol: 'mqtts', // Secure MQTT
-    rejectUnauthorized: false // For development - remove in production
+    rejectUnauthorized: false, // For development - remove in production
+    connectTimeout: 30000, // 30 second connection timeout
+    keepalive: 60
   };
 
+  console.log(`🔌 Connecting to MQTT Broker: ${MQTT_BROKER}:${MQTT_PORT}`);
   mqttClient = mqtt.connect(options);
 
   mqttClient.on('connect', () => {
@@ -44,6 +47,8 @@ function connectMQTT() {
     mqttClient.subscribe(MQTT_TOPIC, (err) => {
       if (!err) {
         console.log(`📡 Subscribed to topic: ${MQTT_TOPIC}`);
+      } else {
+        console.error('❌ Subscription error:', err);
       }
     });
   });
@@ -67,11 +72,19 @@ function connectMQTT() {
   });
 
   mqttClient.on('error', (err) => {
-    console.error('❌ MQTT Error:', err);
+    console.error('❌ MQTT Error:', err.message);
   });
 
   mqttClient.on('reconnect', () => {
     console.log('🔄 Reconnecting to MQTT Broker...');
+  });
+
+  mqttClient.on('close', () => {
+    console.log('❌ MQTT Connection closed');
+  });
+
+  mqttClient.on('offline', () => {
+    console.log('⚠️ MQTT Client offline');
   });
 }
 
@@ -136,4 +149,13 @@ app.get('/api/cities/:city/history', (req, res) => {
 app.listen(PORT, () => {
   console.log(`🚀 AeroShield Backend Server running on port ${PORT}`);
   console.log(`📡 MQTT Broker: ${MQTT_BROKER}:${MQTT_PORT}`);
+  console.log(`👤 MQTT Username: ${MQTT_USERNAME}`);
+  console.log(`🎯 MQTT Topic: ${MQTT_TOPIC}`);
+  console.log(`🌐 Health check: http://localhost:${PORT}/health`);
+  
+  // Log Render environment info
+  if (process.env.RENDER) {
+    console.log(`🎭 Running on Render`);
+    console.log(`🌍 Region: ${process.env.RENDER_REGION || 'unknown'}`);
+  }
 });
